@@ -1,19 +1,17 @@
 {
-  "name": "pic",
+  "name": "usersapp",
   "version": "1.0.0",
-  "description": "A teste with express",
+  "description": "A simple app with express",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Mathias Oliveira",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "browser-request": "^0.3.3",
-    "express": "^4.16.2"
-  },
-  "devDependencies": {
-    "nodemon": "^1.17.1"
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "mongojs": "^2.5.0"
   }
 }

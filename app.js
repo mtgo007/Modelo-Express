@@ -1,38 +1,47 @@
-
-var express = require('express');
+var express = require('express')
 var bodyParser = require('body-parser')
-var app = express();
-var porta = 3000;
-let dados = [
-    {nome:"Dereguejhonson", idade:"25"},
-    {nome:"Dereguedeixe", idade:"24"}
-]
+var path = require('path');
+var mongojs = require('mongojs')
+var app = express()
 
-app.use(express.static('public'));
-app.use(bodyParser.text({ type: 'text/html' }))
-
-app.get('/', function (req, res) {
-    res.sendFile(__dirname+'/public/index.html');
-});
-
-app.get('/cadastrar', function (req, res) {
-    res.sendFile(__dirname+'/public/user.html');
-});
-
-app.get('/user', function (req, res) {
-    res.send(JSON.stringify(dados));
-});
-
-app.post('/user', function (req, res, next) {
-    console.log(req);
-    res.send("ok");
-    next();
-});
+//start mongoDB
+var db = mongojs('127.0.0.1/userapp', ['users'])
 
 
+//middlewares
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
+//view engine
+app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, 'views'))
 
-app.listen(porta, function () {
-  console.log('Example app listening on port 3000!');
-});
+//set static path
+app.use(express.static(path.join(__dirname, "public")));
 
+//routes
+app.get('/', function(req, res){
+    res.render("index");
+})
+
+app.get('/users', function(req, res){
+    db.users.find(function (err, docs) {
+        if(err) console.log(err)
+        console.log(docs);
+        res.render("users", {users : docs});
+    })
+})
+
+app.post('/users/add', function(req, res){
+    let newUser = {
+        nome: req.body.nome,
+        sobrenome: req.body.sobrenome,
+        idade: req.body.idade
+    }
+    db.users.insert(newUser);
+    res.redirect("/users");
+})
+
+app.listen(3000,function(){
+    console.log("Server started on port 3000");
+})
